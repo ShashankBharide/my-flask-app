@@ -18,6 +18,8 @@ phases:
     commands:
       - echo Pushing the Docker image...
       - docker push 195275669329.dkr.ecr.ca-central-1.amazonaws.com/shashank-final-test:latest
+      - echo Updating ECS service to use the latest image...
+      - aws ecs update-service --cluster shashank-app-cluster --service shashank-app-service --force-new-deployment
       - echo Build completed on `date`
 
 artifacts:
