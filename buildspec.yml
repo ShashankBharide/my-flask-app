@@ -9,23 +9,20 @@ phases:
     commands:
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 195275669329.dkr.ecr.us-east-1.amazonaws.com
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - echo "Image Tag: $IMAGE_TAG"
-      - export IMAGE_TAG
   build:
     commands:
       - echo "Building the Docker image..."
-      - docker build -t shashank-bharide:$IMAGE_TAG .
-      - docker tag shashank-bharide:$IMAGE_TAG 195275669329.dkr.ecr.us-east-1.amazonaws.com/shashank-bharide:$IMAGE_TAG
+      - docker build -t shashank-bharide .
+      - docker tag shashank-bharide:latest 195275669329.dkr.ecr.us-east-1.amazonaws.com/shashank-bharide:latest
   post_build:
     commands:
       - echo "Pushing the Docker image to ECR..."
-      - docker push 195275669329.dkr.ecr.us-east-1.amazonaws.com/shashank-bharide:$IMAGE_TAG
+      - docker push 195275669329.dkr.ecr.us-east-1.amazonaws.com/shashank-bharide:latest
       - echo "Creating imagedefinitions.json..."
-      - printf '[{"name":"shashank-app-container","imageUri":"195275669329.dkr.ecr.us-east-1.amazonaws.com/shashank-bharide:%s"}]' $IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"shashank-app-container","imageUri":"195275669329.dkr.ecr.us-east-1.amazonaws.com/shashank-bharide:latest"}]' > imagedefinitions.json
       - echo "imagedefinitions.json created successfully."
       - echo "Build completed on $(date)"
-        
+      
 artifacts:
   files:
     - imagedefinitions.json
