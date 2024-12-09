@@ -3,25 +3,25 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing dependencies...
+      - echo "Installing dependencies..."
       - pip install --upgrade pip
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region ca-central-1 | docker login --username AWS --password-stdin 195275669329.dkr.ecr.ca-central-1.amazonaws.com
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 195275669329.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
-      - echo Building the Docker image...
-      - docker build -t shashank-final-test .
-      - docker tag shashank-final-test:latest 195275669329.dkr.ecr.ca-central-1.amazonaws.com/shashank-final-test:latest
+      - echo "Building the Docker image..."
+      - docker build -t shashank-bharide .
+      - docker tag shashank-bharide:latest 195275669329.dkr.ecr.us-east-1.amazonaws.com/shashank-bharide:latest
   post_build:
     commands:
-      - echo Pushing the Docker image...
-      - docker push 195275669329.dkr.ecr.ca-central-1.amazonaws.com/shashank-final-test:latest
-      - echo Updating ECS service to use the latest image...
+      - echo "Pushing the Docker image to ECR..."
+      - docker push 195275669329.dkr.ecr.us-east-1.amazonaws.com/shashank-bharide:latest
+      - echo "Updating ECS service to use the latest image..."
       - aws ecs update-service --cluster shashank-app-cluster --service shashank-app-service --force-new-deployment
-      - echo Build completed on `date`
-
+      - echo "Build completed on $(date)"
+    
 artifacts:
   files:
     - '**/*'
